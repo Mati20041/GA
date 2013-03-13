@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package algorytmgenetyczny;
+package com.lds.mati.geneticAlgorithm;
 
 import java.util.ArrayList;
 

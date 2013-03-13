@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package algorytmgenetyczny;
+package com.lds.mati.geneticAlgorithm;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,12 +13,12 @@ import java.util.Collections;
  *
  * @author Mati
  */
-public class ProblemKolorowaniaGrafu implements Problem<Integer> {
+public class GraphColoringProblem implements Problem<Integer> {
 
     private Graph graph;
     private int colors;
 
-    public ProblemKolorowaniaGrafu(Graph graph, int colors) {
+    public GraphColoringProblem(Graph graph, int colors) {
         this.graph = graph;
         this.colors = colors;
     }

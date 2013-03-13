@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package algorytmgenetyczny;
+package com.lds.mati.geneticAlgorithm;
 
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
@@ -36,8 +36,8 @@ public class Main {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            ProblemKolorowaniaGrafu gcp = new ProblemKolorowaniaGrafu(graf, colors);
-            AlgorytmGenetyczny<Integer> ea = new AlgorytmGenetyczny<>(gcp, populationSize, parentsSize, crossProbability, mutationProbability);
+            GraphColoringProblem gcp = new GraphColoringProblem(graf, colors);
+            GeneticAlgorithm<Integer> ea = new GeneticAlgorithm<>(gcp, populationSize, parentsSize, crossProbability, mutationProbability);
             ea.run(maxIterations);
             ea.plot();
         } else {
@@ -56,8 +56,8 @@ public class Main {
 //            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
 //        }
 //
-//        ProblemKolorowaniaGrafu gcp = new ProblemKolorowaniaGrafu(graf, colors);
-//        AlgorytmGenetyczny<Integer> ea = new AlgorytmGenetyczny<>(gcp, populationSize, parentsSize, crossProbability, mutationProbability);
+//        GraphColoringProblem gcp = new GraphColoringProblem(graf, colors);
+//        GeneticAlgorithm<Integer> ea = new GeneticAlgorithm<>(gcp, populationSize, parentsSize, crossProbability, mutationProbability);
 //        ArrayList<Double> max = new ArrayList<>();
 //        ArrayList<Double> avg = new ArrayList<>();
 //        ArrayList<Double> min = new ArrayList<>();

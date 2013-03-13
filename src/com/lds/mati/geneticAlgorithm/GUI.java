@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package algorytmgenetyczny;
+package com.lds.mati.geneticAlgorithm;
 
 import java.awt.BorderLayout;
 import java.io.File;
@@ -26,7 +26,7 @@ public class GUI extends javax.swing.JFrame {
     public static double mutationProbability = 0.001;
     private Graph graph;
     private JFileChooser fj;
-    private AlgorytmGenetyczny<Integer> ea;
+    private GeneticAlgorithm<Integer> ea;
     Plot2DPanel p;
 
     /**
@@ -255,8 +255,8 @@ public class GUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Błąd wprowadzonych danych!");
             return;
         }
-        ProblemKolorowaniaGrafu gcp = new ProblemKolorowaniaGrafu(graph, colors);
-        ea = new AlgorytmGenetyczny<Integer>(gcp, populationSize, parentsSize, crossProbability, mutationProbability);
+        GraphColoringProblem gcp = new GraphColoringProblem(graph, colors);
+        ea = new GeneticAlgorithm<Integer>(gcp, populationSize, parentsSize, crossProbability, mutationProbability);
         jProgressBar1.setIndeterminate(true);
         jButton1.setEnabled(false);
         jButton2.setEnabled(false);

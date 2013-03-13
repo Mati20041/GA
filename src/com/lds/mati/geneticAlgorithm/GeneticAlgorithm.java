@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package algorytmgenetyczny;
+package com.lds.mati.geneticAlgorithm;
 
 import java.util.ArrayList;
 import javax.swing.JFrame;
@@ -12,7 +12,7 @@ import org.math.plot.Plot2DPanel;
  *
  * @author Mati
  */
-public class AlgorytmGenetyczny<T> {
+public class GeneticAlgorithm<T> {
 
     private ArrayList<T[]> gens;
     private Problem<T> problem;
@@ -27,7 +27,7 @@ public class AlgorytmGenetyczny<T> {
     private double crossOverProbability;
     private double mutationProbability;
 
-    public AlgorytmGenetyczny(Problem<T> problem, int populationSize, int parentSize, double crossOverProbability, double mutationProbability) {
+    public GeneticAlgorithm(Problem<T> problem, int populationSize, int parentSize, double crossOverProbability, double mutationProbability) {
         this.problem = problem;
         this.populationSize = populationSize;
         this.parentSize = parentSize;
