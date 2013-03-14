@@ -44,13 +44,13 @@ public class GeneticAlgorithm<T> {
         avg = new ArrayList<>();
         gens = problem.init(populationSize);
         bestSolution = gens.get(0);
-        updateMembers(gens);
+        refreshStatistics(gens);
         int i = 0;
         for (i = 0; i < maxIterations && !problem.stopFunction(bestSolution); ++i) {
             gens = problem.selection(gens, parentSize);
             gens = problem.crossover(gens, populationSize, crossOverProbability);
             gens = problem.mutate(gens, mutationProbability);
-            updateMembers(gens);
+            refreshStatistics(gens);
         }
 
         bestSolutionCost = problem.costFunction(bestSolution);
@@ -59,7 +59,7 @@ public class GeneticAlgorithm<T> {
         return bestSolution;
     }
 
-    private void updateMembers(ArrayList<T[]> gens) {
+    private void refreshStatistics(ArrayList<T[]> gens) {
 
         double max, min, avg, current;
         avg = max = min = problem.costFunction(gens.get(0));
