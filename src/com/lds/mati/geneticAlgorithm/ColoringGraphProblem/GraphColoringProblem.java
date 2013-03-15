@@ -2,8 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.lds.mati.geneticAlgorithm;
+package com.lds.mati.geneticAlgorithm.ColoringGraphProblem;
 
+import com.lds.mati.geneticAlgorithm.engine.Problem;
+import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.Graph;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -58,14 +60,15 @@ public class GraphColoringProblem implements Problem<Integer> {
             if (i >= popSize) {
                 i = 0;
             }
-            Integer[] t1, t2, t3, t4;
+            Integer[] t1, t2;
+            Integer[][] t;
             t1 = population.get(i);
             if (Math.random() < crossProbability) {
                 t2 = population.get((int) Math.floor(Math.random() * (popSize)));
-                t3 = cross1(t1, t2);
-                t4 = cross2(t1, t2);
-                newPopulation.add(t3);
-                newPopulation.add(t4);
+                t = cross(t1, t2);
+                for(int j = 0 ; j < t.length ; ++j){
+                    newPopulation.add(t[j]);
+                }
             } else {
                 newPopulation.add(t1);
             }
@@ -124,26 +127,15 @@ public class GraphColoringProblem implements Problem<Integer> {
         return (int) Math.floor(Math.random() * (colors));
     }
 
-    private Integer[] cross1(Integer[] t1, Integer[] t2) {
-        Integer[] t = new Integer[t1.length];
+    private Integer[][] cross(Integer[] t1, Integer[] t2) {
+        Integer[][] t = new Integer[2][t1.length];
         for (int i = 0; i < t.length; ++i) {
             if (i < t.length / 2) {
-                t[i] = t1[i];
+                t[0][i] = t1[i];
+                t[1][i] = t2[i];
             } else {
-                t[i] = t2[i];
-            }
-        }
-
-        return t;
-    }
-
-    private Integer[] cross2(Integer[] t1, Integer[] t2) {
-        Integer[] t = new Integer[t1.length];
-        for (int i = 0; i < t.length; ++i) {
-            if (i < t.length / 2) {
-                t[i] = t2[i];
-            } else {
-                t[i] = t1[i];
+                t[0][i] = t2[i];
+                t[1][i] = t1[i];
             }
         }
 

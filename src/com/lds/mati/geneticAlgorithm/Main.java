@@ -4,6 +4,10 @@
  */
 package com.lds.mati.geneticAlgorithm;
 
+import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.GraphColoringProblem;
+import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.Graph;
+import com.lds.mati.geneticAlgorithm.engine.GeneticAlgorithm;
+import com.lds.mati.geneticAlgorithm.GUI.GUI;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

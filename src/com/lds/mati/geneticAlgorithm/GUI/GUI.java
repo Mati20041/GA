@@ -2,8 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.lds.mati.geneticAlgorithm;
+package com.lds.mati.geneticAlgorithm.GUI;
 
+import com.lds.mati.geneticAlgorithm.engine.GeneticAlgorithm;
+import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.Graph;
+import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.GraphColoringProblem;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,12 +23,13 @@ import org.math.plot.Plot2DPanel;
  */
 public class GUI extends javax.swing.JFrame {
 
-    public static int maxIterations = 10000;
-    public static int colors = 15;
-    public static int populationSize = 100;
-    public static int parentsSize = 20;
-    public static double crossProbability = 0.7;
-    public static double mutationProbability = 0.001;
+    public int refreshProgressBarTime = 1000;
+    public int maxIterations = 10000;
+    public int colors = 15;
+    public int populationSize = 100;
+    public int parentsSize = 20;
+    public double crossProbability = 0.7;
+    public double mutationProbability = 0.001;
     private Graph graph;
     private JFileChooser fj;
     private GeneticAlgorithm<Integer> ea;
@@ -36,6 +40,8 @@ public class GUI extends javax.swing.JFrame {
      */
     public GUI() {
         initComponents();
+        jProgressBar1.setString("0");
+        jProgressBar1.setStringPainted(true);
         fj = new JFileChooser();
         p = new Plot2DPanel();
         p.addLegend("SOUTH");
@@ -274,10 +280,11 @@ public class GUI extends javax.swing.JFrame {
         try {
             ea.validate();
         } catch (IllegalStateException illegalStateException) {
-            JOptionPane.showMessageDialog(this,illegalStateException.getMessage());
+            JOptionPane.showMessageDialog(this, illegalStateException.getMessage());
             return;
         }
-        //jProgressBar1.setIndeterminate(true);
+        jProgressBar1.setValue(0);
+        jProgressBar1.setString("0");
         jButton1.setEnabled(false);
         jButton2.setEnabled(false);
         jTextField1.setEnabled(false);
@@ -308,14 +315,16 @@ public class GUI extends javax.swing.JFrame {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while(ea.isRunning()){
+                do {
                     try {
-                        Thread.sleep(30);
+                        Thread.sleep(refreshProgressBarTime);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    jProgressBar1.setValue(ea.iterations*100/maxIterations);
-                }
+                    int temp = ea.iterations;
+                    jProgressBar1.setValue(temp * 100 / maxIterations);
+                    jProgressBar1.setString(temp + "");
+                } while (ea.isRunning());
             }
         }).start();
     }//GEN-LAST:event_jButton2ActionPerformed

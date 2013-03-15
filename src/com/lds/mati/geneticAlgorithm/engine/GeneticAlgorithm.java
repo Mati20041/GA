@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.lds.mati.geneticAlgorithm;
+package com.lds.mati.geneticAlgorithm.engine;
 
 import java.util.ArrayList;
 import javax.swing.JFrame;
