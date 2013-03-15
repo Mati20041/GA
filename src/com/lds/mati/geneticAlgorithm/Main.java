@@ -29,6 +29,7 @@ public class Main {
     public static int parentsSize = 10;
     public static double crossProbability = 0.7;
     public static double mutationProbability = 0.2;
+    public static boolean isDoubleSlicedGenom = true;
 
     public static void main(String[] args) {
 
@@ -40,7 +41,7 @@ public class Main {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            GraphColoringProblem gcp = new GraphColoringProblem(graf, colors);
+            GraphColoringProblem gcp = new GraphColoringProblem(graf, colors, isDoubleSlicedGenom);
             GeneticAlgorithm<Integer> ea = new GeneticAlgorithm<>(gcp, populationSize, parentsSize, crossProbability, mutationProbability, maxIterations);
             ea.run();
             ea.plot();

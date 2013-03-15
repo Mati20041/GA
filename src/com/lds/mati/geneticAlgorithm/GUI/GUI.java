@@ -33,17 +33,18 @@ public class GUI extends javax.swing.JFrame {
     public int parentsSize = 20;
     public double crossProbability = 0.7;
     public double mutationProbability = 0.001;
+    private int maxPlotVars = 1000;
     private Graph graph;
     private JFileChooser fj;
     private GeneticAlgorithm<Integer> ea;
     Plot2DPanel p;
-    private int maxPlotVars;
+    
+    private GraphColoringProblem gcp;
 
     /**
      * Creates new form GUI
      */
     public GUI() {
-        maxPlotVars = 5000;
         initComponents();
         jProgressBar1.setString("0");
         jProgressBar1.setStringPainted(true);
@@ -63,6 +64,7 @@ public class GUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -81,6 +83,9 @@ public class GUI extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
         jButton3 = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jRadioButton1 = new javax.swing.JRadioButton();
+        jRadioButton2 = new javax.swing.JRadioButton();
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -142,6 +147,34 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Cięcie genotypu"));
+
+        buttonGroup1.add(jRadioButton1);
+        jRadioButton1.setSelected(true);
+        jRadioButton1.setText("2 Miejscowe");
+
+        buttonGroup1.add(jRadioButton2);
+        jRadioButton2.setText("3 Miejscowe");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(66, 66, 66)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jRadioButton1)
+                    .addComponent(jRadioButton2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jRadioButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioButton2))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -152,6 +185,8 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -171,8 +206,7 @@ public class GUI extends javax.swing.JFrame {
                             .addComponent(jTextField4)
                             .addComponent(jTextField5)
                             .addComponent(jTextField6))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -206,8 +240,10 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                .addComponent(jButton3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
@@ -281,7 +317,7 @@ public class GUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Błąd wprowadzonych danych!");
             return;
         }
-        GraphColoringProblem gcp = new GraphColoringProblem(graph, colors);
+        gcp = new GraphColoringProblem(graph, colors,jRadioButton1.isSelected());
         ea = new GeneticAlgorithm<>(gcp, populationSize, parentsSize, crossProbability, mutationProbability, maxIterations);
         try {
             ea.validate();
@@ -291,15 +327,8 @@ public class GUI extends javax.swing.JFrame {
         }
         jProgressBar1.setValue(0);
         jProgressBar1.setString("0");
-        jButton1.setEnabled(false);
-        jButton2.setEnabled(false);
-        jTextField1.setEnabled(false);
-        jTextField2.setEnabled(false);
-        jTextField3.setEnabled(false);
-        jTextField4.setEnabled(false);
-        jTextField5.setEnabled(false);
-        jTextField6.setEnabled(false);
-        jButton3.setEnabled(true);
+        setButtonsState(false);
+        
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -307,15 +336,7 @@ public class GUI extends javax.swing.JFrame {
                 jLabel7.setText(String.format("Info: Best Result: %.4f No of Iteration: %d", ea.bestSolutionCost, ea.iterations));
                 plot(ea.max, ea.avg, ea.min);
                 //jProgressBar1.setIndeterminate(false);
-                jButton1.setEnabled(true);
-                jButton2.setEnabled(true);
-                jTextField1.setEnabled(true);
-                jTextField2.setEnabled(true);
-                jTextField3.setEnabled(true);
-                jTextField4.setEnabled(true);
-                jTextField5.setEnabled(true);
-                jTextField6.setEnabled(true);
-                jButton3.setEnabled(false);
+                setButtonsState(true);
             }
         }).start();
         new Thread(new Runnable() {
@@ -365,22 +386,22 @@ public class GUI extends javax.swing.JFrame {
         p.setVisible(false);
         p.removeAllPlots();
 
-        if (max.size() > maxPlotVars) {
+        if (max.size()>maxPlotVars) {
             length = maxPlotVars;
         } else {
             length = max.size();
         }
 
-        int step = (max.size() / length);
+        float step = (float) (1.*max.size() / length);
 
         max2 = new double[length];
         avg2 = new double[length];
         min2 = new double[length];
         X = new double[length];
         for (int i = 0; i < length; ++i) {
-            max2[i] = max.get(i * step);
-            avg2[i] = avg.get(i * step);
-            min2[i] = min.get(i * step);
+            max2[i] = max.get(Math.round(i * step));
+            avg2[i] = avg.get(Math.round(i * step));
+            min2[i] = min.get(Math.round(i * step));
             X[i] = i * step;
         }
 
@@ -391,6 +412,7 @@ public class GUI extends javax.swing.JFrame {
         p.setVisible(true);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -403,7 +425,10 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
@@ -411,4 +436,18 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
     // End of variables declaration//GEN-END:variables
+
+    private void setButtonsState(boolean ustaw) {
+        jButton1.setEnabled(ustaw);
+        jButton2.setEnabled(ustaw);
+        jTextField1.setEnabled(ustaw);
+        jTextField2.setEnabled(ustaw);
+        jTextField3.setEnabled(ustaw);
+        jTextField4.setEnabled(ustaw);
+        jTextField5.setEnabled(ustaw);
+        jTextField6.setEnabled(ustaw);
+        jRadioButton1.setEnabled(ustaw);
+        jRadioButton2.setEnabled(ustaw);
+        jButton3.setEnabled(!ustaw);
+    }
 }
