@@ -7,6 +7,7 @@ package com.lds.mati.geneticAlgorithm.GUI;
 import com.lds.mati.geneticAlgorithm.engine.GeneticAlgorithm;
 import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.Graph;
 import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.GraphColoringProblem;
+import com.lds.mati.geneticAlgorithm.Main;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,6 +16,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.math.plot.Plot2DPanel;
 
 /**
@@ -34,11 +37,13 @@ public class GUI extends javax.swing.JFrame {
     private JFileChooser fj;
     private GeneticAlgorithm<Integer> ea;
     Plot2DPanel p;
+    private int maxPlotVars;
 
     /**
      * Creates new form GUI
      */
     public GUI() {
+        maxPlotVars = 5000;
         initComponents();
         jProgressBar1.setString("0");
         jProgressBar1.setStringPainted(true);
@@ -325,7 +330,7 @@ public class GUI extends javax.swing.JFrame {
                     int iter = ea.iterations;
                     double fval = ea.bestSolutionCost;
                     jProgressBar1.setValue(iter * 100 / maxIterations);
-                    jProgressBar1.setString(String.format("It: %d Fval: %.3f", iter,fval));
+                    jProgressBar1.setString(String.format("It: %d Fval: %.4f", iter, fval));
                 } while (ea.isRunning());
             }
         }).start();
@@ -340,28 +345,11 @@ public class GUI extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -372,24 +360,35 @@ public class GUI extends javax.swing.JFrame {
     }
 
     private void plot(ArrayList<Double> max, ArrayList<Double> avg, ArrayList<Double> min) {
-        double[] min2, max2, avg2;
+        double[] min2, max2, avg2, X;
+        int length = 0;
         p.setVisible(false);
         p.removeAllPlots();
-        max2 = new double[max.size()];
-        avg2 = new double[max.size()];
-        min2 = new double[max.size()];
-        for (int i = 0; i < max2.length; ++i) {
-            max2[i] = max.get(i);
-            avg2[i] = avg.get(i);
-            min2[i] = min.get(i);
+
+        if (max.size() > maxPlotVars) {
+            length = maxPlotVars;
+        } else {
+            length = max.size();
         }
 
-        p.addLinePlot("Max", max2);
-        p.addLinePlot("Avg", avg2);
-        p.addLinePlot("Min", min2);
+        int step = (max.size() / length);
+
+        max2 = new double[length];
+        avg2 = new double[length];
+        min2 = new double[length];
+        X = new double[length];
+        for (int i = 0; i < length; ++i) {
+            max2[i] = max.get(i * step);
+            avg2[i] = avg.get(i * step);
+            min2[i] = min.get(i * step);
+            X[i] = i * step;
+        }
+
+        p.addLinePlot("Max", X, max2);
+        p.addLinePlot("Avg", X, avg2);
+        p.addLinePlot("Min", X, min2);
         p.setFixedBounds(0, 0, ea.iterations);
         p.setVisible(true);
-
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

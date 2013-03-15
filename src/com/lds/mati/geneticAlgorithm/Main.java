@@ -41,7 +41,7 @@ public class Main {
             }
 
             GraphColoringProblem gcp = new GraphColoringProblem(graf, colors);
-            GeneticAlgorithm<Integer> ea = new GeneticAlgorithm<>(gcp, populationSize, parentsSize, crossProbability, mutationProbability,maxIterations);
+            GeneticAlgorithm<Integer> ea = new GeneticAlgorithm<>(gcp, populationSize, parentsSize, crossProbability, mutationProbability, maxIterations);
             ea.run();
             ea.plot();
         } else {
