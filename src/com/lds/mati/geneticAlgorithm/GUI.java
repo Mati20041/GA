@@ -8,6 +8,8 @@ import java.awt.BorderLayout;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import org.math.plot.Plot2DPanel;
@@ -67,6 +69,7 @@ public class GUI extends javax.swing.JFrame {
         jTextField6 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
+        jButton3 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -120,20 +123,35 @@ public class GUI extends javax.swing.JFrame {
 
         jLabel7.setText("Info: ");
 
+        jButton3.setText("Zatrzymaj");
+        jButton3.setEnabled(false);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel7)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel6))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -144,12 +162,6 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(jTextField5)
                     .addComponent(jTextField6))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel7)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -182,7 +194,9 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addComponent(jButton3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addComponent(jLabel7))
@@ -256,8 +270,14 @@ public class GUI extends javax.swing.JFrame {
             return;
         }
         GraphColoringProblem gcp = new GraphColoringProblem(graph, colors);
-        ea = new GeneticAlgorithm<Integer>(gcp, populationSize, parentsSize, crossProbability, mutationProbability);
-        jProgressBar1.setIndeterminate(true);
+        ea = new GeneticAlgorithm<>(gcp, populationSize, parentsSize, crossProbability, mutationProbability, maxIterations);
+        try {
+            ea.validate();
+        } catch (IllegalStateException illegalStateException) {
+            JOptionPane.showMessageDialog(this,illegalStateException.getMessage());
+            return;
+        }
+        //jProgressBar1.setIndeterminate(true);
         jButton1.setEnabled(false);
         jButton2.setEnabled(false);
         jTextField1.setEnabled(false);
@@ -266,13 +286,14 @@ public class GUI extends javax.swing.JFrame {
         jTextField4.setEnabled(false);
         jTextField5.setEnabled(false);
         jTextField6.setEnabled(false);
+        jButton3.setEnabled(true);
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ea.run(maxIterations);
+                ea.run();
                 jLabel7.setText(String.format("Info: Best Result: %.4f No of Iteration: %d", ea.bestSolutionCost, ea.iterations));
                 plot(ea.max, ea.avg, ea.min);
-                jProgressBar1.setIndeterminate(false);
+                //jProgressBar1.setIndeterminate(false);
                 jButton1.setEnabled(true);
                 jButton2.setEnabled(true);
                 jTextField1.setEnabled(true);
@@ -281,10 +302,28 @@ public class GUI extends javax.swing.JFrame {
                 jTextField4.setEnabled(true);
                 jTextField5.setEnabled(true);
                 jTextField6.setEnabled(true);
+                jButton3.setEnabled(false);
             }
         }).start();
-
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(ea.isRunning()){
+                    try {
+                        Thread.sleep(30);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    jProgressBar1.setValue(ea.iterations*100/maxIterations);
+                }
+            }
+        }).start();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        ea.stop();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -344,6 +383,7 @@ public class GUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

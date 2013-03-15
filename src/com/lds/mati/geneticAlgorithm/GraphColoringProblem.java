@@ -21,6 +21,8 @@ public class GraphColoringProblem implements Problem<Integer> {
     public GraphColoringProblem(Graph graph, int colors) {
         this.graph = graph;
         this.colors = colors;
+        if(colors<1)
+            throw new IndexOutOfBoundsException("Musi być przynajmniej jeden kolor!");
     }
 
     @Override

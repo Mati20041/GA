@@ -22,40 +22,46 @@ public class GeneticAlgorithm<T> {
     public ArrayList<Double> min;
     public double bestSolutionCost;
     public int iterations;
-    private int populationSize;
-    private int parentSize;
-    private double crossOverProbability;
-    private double mutationProbability;
-
-    public GeneticAlgorithm(Problem<T> problem, int populationSize, int parentSize, double crossOverProbability, double mutationProbability) {
+    private boolean isRunning;
+    
+    public int populationSize;
+    public int parentSize;
+    public double crossOverProbability;
+    public double mutationProbability;
+    public int maxIterations;
+    
+    public GeneticAlgorithm(Problem<T> problem, int populationSize, int parentSize, double crossOverProbability, double mutationProbability,int maxIterations) throws IllegalStateException {
         this.problem = problem;
         this.populationSize = populationSize;
         this.parentSize = parentSize;
         this.crossOverProbability = crossOverProbability;
         this.mutationProbability = mutationProbability;
+        this.maxIterations = maxIterations;
         max = new ArrayList<>();
         min = new ArrayList<>();
         avg = new ArrayList<>();
     }
 
-    public T[] run(int maxIterations) {
+    public T[] run() {
+        validate();
+        isRunning = true;
         max = new ArrayList<>();
         min = new ArrayList<>();
         avg = new ArrayList<>();
+        
         gens = problem.init(populationSize);
         bestSolution = gens.get(0);
         refreshStatistics(gens);
-        int i = 0;
-        for (i = 0; i < maxIterations && !problem.stopFunction(bestSolution); ++i) {
+        iterations = 0;
+        for (; isRunning && iterations < maxIterations && !problem.stopFunction(bestSolution); ++iterations) {
             gens = problem.selection(gens, parentSize);
             gens = problem.crossover(gens, populationSize, crossOverProbability);
             gens = problem.mutate(gens, mutationProbability);
             refreshStatistics(gens);
         }
-
+        isRunning = false;
         bestSolutionCost = problem.costFunction(bestSolution);
-        iterations = i;
-        System.out.println("Best solution cost: " + problem.costFunction(bestSolution) + " No iterations: " + i);
+        System.out.println("Best solution cost: " + problem.costFunction(bestSolution) + " No iterations: " + iterations);
         return bestSolution;
     }
 
@@ -103,5 +109,29 @@ public class GeneticAlgorithm<T> {
         window.setContentPane(p);
         window.setSize(600, 600);
         window.setVisible(true);
+    }
+
+    public boolean validate() throws IllegalStateException {
+        if(populationSize<parentSize){
+            throw new IllegalStateException("Liczba populacji mniejsza od liczby rodziców");
+        }
+        if(populationSize==0||parentSize==0){
+            throw new IllegalStateException("Liczba populacji lub rodziców wynosi 0");
+        }
+        if(mutationProbability<0||crossOverProbability<0){
+            throw new IllegalStateException("Prawdopodobieństwo mutacji lub krzyżowania mniejsze niż 0%");
+        }
+        if(maxIterations<=1){
+            throw new IllegalStateException("Liczba iteracji za mała (co najmniej 1)");
+        }
+        return true;
+    }
+    
+    synchronized public void stop(){
+        isRunning = false;
+    }
+    
+    public boolean isRunning(){
+        return isRunning;
     }
 }

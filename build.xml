@@ -7,9 +7,38 @@
 <!-- the Compile on Save feature is turned off for the project. -->
 <!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
 <!-- in the project's Project Properties dialog box.-->
-<project name="GeneticAlgorithm" default="default" basedir=".">
+<project xmlns:j2seproject1="http://www.netbeans.org/ns/j2se-project/1" xmlns:j2seproject3="http://www.netbeans.org/ns/j2se-project/3" xmlns:jaxrpc="http://www.netbeans.org/ns/j2se-project/jax-rpc" name="GeneticAlgorithm" default="default" basedir=".">
     <description>Builds, tests, and runs the project GeneticAlgorithm.</description>
     <import file="nbproject/build-impl.xml"/>
+    
+    <target name="-unjar-and-copy-lib-jars">
+    <unjar dest="${build.classes.dir}">
+        <fileset dir="lib">
+            <include name="**/*.jar"/>
+        </fileset>
+        <patternset>
+            <exclude name="META-INF/**"/>
+            <exclude name="/*"/>
+        </patternset>
+    </unjar>
+</target>
+
+<target depends="init,compile,-pre-pre-jar,-pre-jar,-unjar-and-copy-lib-jars" name="fat-jar">
+    <property location="${build.classes.dir}" name="build.classes.dir.resolved"/>
+    <jar destfile="${dist.jar}">
+        <fileset dir="${build.classes.dir}"/>
+        <manifest>
+            <attribute name="Main-Class" value="${main.class}"/>
+        </manifest>
+    </jar>
+    <echo>To run this application from the command line without Ant, try:</echo>
+    <property location="${dist.jar}" name="dist.jar.resolved"/>
+    <echo>java -jar "${dist.jar.resolved}"</echo>
+</target>
+
+<target depends="clean,fat-jar" name="clean-and-fat-jar"/>
+
+
     <!--
 
     There exist several targets which are by default empty and which can be 
