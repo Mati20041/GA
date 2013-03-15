@@ -76,6 +76,7 @@ public class GeneticAlgorithm<T> {
                 max = current;
                 if (bestSolution == null || max > problem.costFunction(bestSolution)) {
                     bestSolution = gens.get(i);
+                    bestSolutionCost=current;
                 }
             }
             min = min > current ? current : min;

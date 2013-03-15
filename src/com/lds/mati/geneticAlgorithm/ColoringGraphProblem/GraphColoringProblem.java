@@ -5,7 +5,6 @@
 package com.lds.mati.geneticAlgorithm.ColoringGraphProblem;
 
 import com.lds.mati.geneticAlgorithm.engine.Problem;
-import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.Graph;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -129,7 +128,7 @@ public class GraphColoringProblem implements Problem<Integer> {
 
     private Integer[][] cross(Integer[] t1, Integer[] t2) {
         Integer[][] t = new Integer[2][t1.length];
-        for (int i = 0; i < t.length; ++i) {
+        for (int i = 0; i < t1.length; ++i) {
             if (i < t.length / 2) {
                 t[0][i] = t1[i];
                 t[1][i] = t2[i];
