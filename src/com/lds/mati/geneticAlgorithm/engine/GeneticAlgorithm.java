@@ -52,8 +52,7 @@ public class GeneticAlgorithm<T> {
         gens = problem.init(populationSize);
         bestSolution = gens.get(0);
         refreshStatistics(gens);
-        iterations = 0;
-        for (; isRunning && iterations < maxIterations && !problem.stopFunction(bestSolution); ++iterations) {
+        for (iterations = 0; isRunning && iterations < maxIterations && !problem.stopFunction(bestSolution); ++iterations) {
             gens = problem.selection(gens, parentSize);
             gens = problem.crossover(gens, populationSize, crossOverProbability);
             gens = problem.mutate(gens, mutationProbability);
@@ -89,28 +88,6 @@ public class GeneticAlgorithm<T> {
         this.min.add(min);
     }
 
-    public void plot() {
-        Plot2DPanel p = new Plot2DPanel();
-        p.addLegend("SOUTH");
-        double[] min, max, avg;
-        max = new double[this.max.size()];
-        avg = new double[this.max.size()];
-        min = new double[this.max.size()];
-        for (int i = 0; i < max.length; ++i) {
-            max[i] = this.max.get(i);
-            avg[i] = this.avg.get(i);
-            min[i] = this.min.get(i);
-        }
-        p.addLinePlot("Max", max);
-        p.addLinePlot("Avg", avg);
-        p.addLinePlot("Min", min);
-
-        JFrame window = new JFrame("Plot");
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setContentPane(p);
-        window.setSize(600, 600);
-        window.setVisible(true);
-    }
 
     public boolean validate() throws IllegalStateException {
         if(populationSize<parentSize){

@@ -8,9 +8,13 @@ import com.lds.mati.geneticAlgorithm.engine.GeneticAlgorithm;
 import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.Graph;
 import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.GraphColoringProblem;
 import com.lds.mati.geneticAlgorithm.Main;
+import com.lds.mati.geneticAlgorithm.Settings;
 import java.awt.BorderLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,19 +30,11 @@ import org.math.plot.Plot2DPanel;
  */
 public class GUI extends javax.swing.JFrame {
 
-    public int refreshProgressBarTime = 1000;
-    public int maxIterations = 10000;
-    public int colors = 15;
-    public int populationSize = 100;
-    public int parentsSize = 20;
-    public double crossProbability = 0.7;
-    public double mutationProbability = 0.001;
-    private int maxPlotVars = 1000;
+    public Settings settings;
     private Graph graph;
     private JFileChooser fj;
     private GeneticAlgorithm<Integer> ea;
     Plot2DPanel p;
-    
     private GraphColoringProblem gcp;
 
     /**
@@ -46,13 +42,17 @@ public class GUI extends javax.swing.JFrame {
      */
     public GUI() {
         initComponents();
-        jProgressBar1.setString("0");
-        jProgressBar1.setStringPainted(true);
         fj = new JFileChooser();
         p = new Plot2DPanel();
-        p.addLegend("SOUTH");
-        jPanel2.setLayout(new BorderLayout());
-        jPanel2.add(p);
+        settings = new Settings();
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                readSettingsParameters();
+                Main.saveSettings(settings);
+            }
+        });
+        customInitComponents();
     }
 
     /**
@@ -90,6 +90,7 @@ public class GUI extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jRadioButton3 = new javax.swing.JRadioButton();
         jRadioButton4 = new javax.swing.JRadioButton();
+        jButton4 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -207,6 +208,13 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(jRadioButton4))
         );
 
+        jButton4.setText("Zapisz Wynik");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -217,7 +225,6 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jProgressBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -239,9 +246,13 @@ public class GUI extends javax.swing.JFrame {
                             .addComponent(jTextField6))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -280,7 +291,9 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
@@ -336,18 +349,13 @@ public class GUI extends javax.swing.JFrame {
             return;
         }
         try {
-            colors = Integer.parseInt(jTextField1.getText());
-            populationSize = Integer.parseInt(jTextField2.getText());
-            parentsSize = Integer.parseInt(jTextField3.getText());
-            mutationProbability = Double.parseDouble(jTextField4.getText());
-            crossProbability = Double.parseDouble(jTextField5.getText());
-            maxIterations = Integer.parseInt(jTextField6.getText());
+            readSettingsParameters();
         } catch (NumberFormatException numberFormatException) {
             JOptionPane.showMessageDialog(this, "Błąd wprowadzonych danych!");
             return;
         }
-        gcp = new GraphColoringProblem(graph, colors,jRadioButton1.isSelected(),jRadioButton4.isSelected());
-        ea = new GeneticAlgorithm<>(gcp, populationSize, parentsSize, crossProbability, mutationProbability, maxIterations);
+        gcp = new GraphColoringProblem(graph, settings.colors, jRadioButton1.isSelected(), jRadioButton4.isSelected());
+        ea = new GeneticAlgorithm<>(gcp, settings.populationSize, settings.parentsSize, settings.crossProbability, settings.mutationProbability, settings.maxIterations);
         try {
             ea.validate();
         } catch (IllegalStateException illegalStateException) {
@@ -363,7 +371,7 @@ public class GUI extends javax.swing.JFrame {
             public void run() {
                 ea.run();
                 jLabel7.setText(String.format("Info: Best Result: %.4f No of Iteration: %d", ea.bestSolutionCost, ea.iterations));
-                plot(ea.max, ea.avg, ea.min);
+                plot(ea.max, ea.avg, ea.min, p, settings.maxPlotVars);
                 //jProgressBar1.setIndeterminate(false);
                 setButtonsState(true);
             }
@@ -373,13 +381,13 @@ public class GUI extends javax.swing.JFrame {
             public void run() {
                 do {
                     try {
-                        Thread.sleep(refreshProgressBarTime);
+                        Thread.sleep(settings.refreshNotificationTime);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     int iter = ea.iterations;
                     double fval = ea.bestSolutionCost;
-                    jProgressBar1.setValue(iter * 100 / maxIterations);
+                    jProgressBar1.setValue(iter * 100 / settings.maxIterations);
                     jProgressBar1.setString(String.format("It: %d Fval: %.4f", iter, fval));
                 } while (ea.isRunning());
             }
@@ -399,6 +407,13 @@ public class GUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        setButtonsState(false);
+        saveResult();
+        setButtonsState(true);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -417,35 +432,39 @@ public class GUI extends javax.swing.JFrame {
         });
     }
 
-    private void plot(ArrayList<Double> max, ArrayList<Double> avg, ArrayList<Double> min) {
+    public static void plot(ArrayList<Double> max, ArrayList<Double> avg, ArrayList<Double> min, Plot2DPanel p, int maxPlotVars) {
         double[] min2, max2, avg2, X;
         int length = 0;
         p.setVisible(false);
         p.removeAllPlots();
 
-        if (max.size()>maxPlotVars) {
+        if (max.size() > maxPlotVars) {
             length = maxPlotVars;
         } else {
             length = max.size();
         }
 
-        float step = (float) (1.*max.size() / length);
+        float step = (float) (1. * max.size() / length);
 
         max2 = new double[length];
         avg2 = new double[length];
         min2 = new double[length];
         X = new double[length];
-        for (int i = 0; i < length; ++i) {
+        for (int i = 0; i < length - 1; ++i) {
             max2[i] = max.get(Math.round(i * step));
             avg2[i] = avg.get(Math.round(i * step));
             min2[i] = min.get(Math.round(i * step));
             X[i] = i * step;
         }
+        max2[length - 1] = max.get(max.size() - 1);
+        avg2[length - 1] = avg.get(avg.size() - 1);
+        min2[length - 1] = min.get(min.size() - 1);
+        X[length - 1] = max.size() - 1;
 
         p.addLinePlot("Max", X, max2);
         p.addLinePlot("Avg", X, avg2);
         p.addLinePlot("Min", X, min2);
-        p.setFixedBounds(0, 0, ea.iterations);
+        p.setFixedBounds(0, 0, X[X.length - 1]);
         p.setVisible(true);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -454,6 +473,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -481,6 +501,7 @@ public class GUI extends javax.swing.JFrame {
     private void setButtonsState(boolean ustaw) {
         jButton1.setEnabled(ustaw);
         jButton2.setEnabled(ustaw);
+        jButton4.setEnabled(ustaw);
         jTextField1.setEnabled(ustaw);
         jTextField2.setEnabled(ustaw);
         jTextField3.setEnabled(ustaw);
@@ -490,5 +511,53 @@ public class GUI extends javax.swing.JFrame {
         jRadioButton1.setEnabled(ustaw);
         jRadioButton2.setEnabled(ustaw);
         jButton3.setEnabled(!ustaw);
+    }
+
+    public void saveResult() {
+        if (ea.bestSolution != null) {
+            fj.showSaveDialog(this);
+            if (fj.getSelectedFile() != null) {
+                try {
+                    PrintWriter out = new PrintWriter(fj.getSelectedFile());
+                    for (int i = 0; i < ea.bestSolution.length; ++i) {
+                        out.printf("v%d : %d\n", i, ea.bestSolution[i]);
+                    }
+                    out.close();
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(rootPane, "Nieudana próba zapisu!");
+                }
+            }
+        } else {
+            JOptionPane.showConfirmDialog(rootPane, "Brak wyniku!");
+        }
+    }
+
+    private void customInitComponents() {
+        jProgressBar1.setString("0");
+        jProgressBar1.setStringPainted(true);
+        p.addLegend("SOUTH");
+        jPanel2.setLayout(new BorderLayout());
+        jPanel2.add(p);
+        jTextField1.setText(settings.colors + "");
+        jTextField2.setText(settings.populationSize + "");
+        jTextField3.setText(settings.parentsSize + "");
+        jTextField4.setText(settings.mutationProbability + "");
+        jTextField5.setText(settings.crossProbability + "");
+        jTextField6.setText(settings.maxIterations + "");
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
+        customInitComponents();
+    }
+
+    private void readSettingsParameters() throws NumberFormatException {
+        settings.colors = Integer.parseInt(jTextField1.getText());
+        settings.populationSize = Integer.parseInt(jTextField2.getText());
+        settings.parentsSize = Integer.parseInt(jTextField3.getText());
+        settings.mutationProbability = Double.parseDouble(jTextField4.getText());
+        settings.crossProbability = Double.parseDouble(jTextField5.getText());
+        settings.maxIterations = Integer.parseInt(jTextField6.getText());
     }
 }

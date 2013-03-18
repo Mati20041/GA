@@ -8,11 +8,31 @@ import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.GraphColoringProblem;
 import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.Graph;
 import com.lds.mati.geneticAlgorithm.engine.GeneticAlgorithm;
 import com.lds.mati.geneticAlgorithm.GUI.GUI;
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+import com.sun.xml.internal.bind.v2.runtime.JAXBContextImpl;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.math.plot.Plot2DPanel;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -23,36 +43,26 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static int maxIterations = 10000;
-    public static int colors = 11;
-    public static int populationSize = 40;
-    public static int parentsSize = 10;
-    public static double crossProbability = 0.7;
-    public static double mutationProbability = 0.2;
-    public static boolean isDoubleSlicedGenom = true;
-    public static boolean isRandomCrossPosition = false;;
+    public static Settings settings;
 
     public static void main(String[] args) {
-
-        if (args.length != 0 && args[0].equals("nogui")) {
-            Graph graf = new Graph();
-            try {
-                graf.loadFromFile("anna.col");
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        settings = new Settings();
+        loadSettings();
+        if (args.length > 0 && args[0].equals("nogui")) {
+            if (args.length == 2 && args[1].equals("notifications")) {
+                noGui(true);
+            } else {
+                noGui(false);
             }
-            
-            GraphColoringProblem gcp = new GraphColoringProblem(graf, colors, isDoubleSlicedGenom, isRandomCrossPosition);
-            GeneticAlgorithm<Integer> ea = new GeneticAlgorithm<>(gcp, populationSize, parentsSize, crossProbability, mutationProbability, maxIterations);
-            ea.run();
-            ea.plot();
         } else {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
-            new GUI().setVisible(true);
+            GUI gui = new GUI();
+            gui.setSettings(settings);
+            gui.setVisible(true);
         }
 
 //        Graph graf = new Graph();
@@ -91,5 +101,91 @@ public class Main {
 //        miv /= min.size();
 //
 //        System.out.println(String.format("Dane dla 10 uruchomień\n~Max wartość %.4f dla %.10f\n~Wartość średnia %.4f dla %.10f\nWartość min %.4f dla %.10f", m, mv, a, av, mi, miv));
+    }
+
+    public static void noGui(boolean showNotifications) {
+        Graph graf = new Graph();
+        try {
+            graf.loadFromFile(settings.graphFileName);
+        } catch (FileNotFoundException ex) {
+            System.err.println("Błąd pliku grafu!");
+            System.exit(-1);
+        }
+        GraphColoringProblem gcp = new GraphColoringProblem(graf, settings.colors, settings.isDoubleSlicedGenom, settings.isRandomCrossPosition);
+        final GeneticAlgorithm<Integer> ea = new GeneticAlgorithm<>(gcp, settings.populationSize, settings.parentsSize, settings.crossProbability, settings.mutationProbability, settings.maxIterations);
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                saveResult(ea.bestSolution);
+            }
+        }));
+        if (showNotifications) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ea.run();
+                }
+            }).start();
+            do {
+                try {
+                    Thread.sleep(settings.refreshNotificationTime);
+                    System.out.printf("Iteration: %d  Fval: %.6f\n", ea.iterations, ea.bestSolutionCost);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } while (ea.isRunning());
+        } else {
+            ea.run();
+        }
+
+        Plot2DPanel p = new Plot2DPanel();
+        GUI.plot(ea.max, ea.avg, ea.min, p, settings.maxPlotVars);
+        JFrame window = new JFrame("Algorytm Genetyczny");
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setContentPane(p);
+        window.setSize(600, 600);
+        window.setVisible(true);
+    }
+
+    public static void saveResult(Integer[] bestSolution) {
+        File resultFile = new File("Result.txt");
+        try {
+            PrintWriter out = new PrintWriter(resultFile);
+            for (int i = 0; i < bestSolution.length; ++i) {
+                out.printf("v%d : %d\n", i, bestSolution[i]);
+            }
+            out.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void loadSettings() {
+        File settingsFile = new File("settings.xml");
+        if (settingsFile.exists()) {
+            try {
+                JAXBContext context = JAXBContext.newInstance(Settings.class);
+                Unmarshaller unmars = context.createUnmarshaller();
+                settings = (Settings) unmars.unmarshal(settingsFile);
+            } catch (JAXBException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            saveSettings(settings);
+        }
+    }
+
+    public static void saveSettings(Settings settings) {
+        File settingsFile = new File("settings.xml");
+        try {
+            JAXBContext context = JAXBContext.newInstance(Settings.class);
+            Marshaller mar = context.createMarshaller();
+            mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            mar.marshal(settings, System.out);
+            mar.marshal(settings, settingsFile);
+        } catch (JAXBException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 }
