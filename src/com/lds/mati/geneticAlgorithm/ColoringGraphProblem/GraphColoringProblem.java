@@ -19,18 +19,20 @@ public class GraphColoringProblem implements Problem<Integer> {
     private Graph graph;
     private int colors;
     private boolean isTwoPartCrossing;
+    private boolean isRandomCrossPosition;
 
     public void setTwoPartCrossing(boolean isTwoPartCrossing) {
         this.isTwoPartCrossing = isTwoPartCrossing;
     }
 
-    public GraphColoringProblem(Graph graph, int colors, boolean isTwoPartCrossing) {
-        this.graph = graph;
-        this.colors = colors;
-        this.isTwoPartCrossing = isTwoPartCrossing;
+    public GraphColoringProblem(Graph graph, int colors, boolean isTwoPartCrossing, boolean isRandomCrossPosition) {
         if (colors < 1) {
             throw new IndexOutOfBoundsException("Musi być przynajmniej jeden kolor!");
         }
+        this.graph = graph;
+        this.colors = colors;
+        this.isTwoPartCrossing = isTwoPartCrossing;
+        this.isRandomCrossPosition = isRandomCrossPosition;
     }
 
     @Override
@@ -141,7 +143,7 @@ public class GraphColoringProblem implements Problem<Integer> {
         int length = t1.length;
         Integer[][] t = new Integer[2][length];
         for (int i = 0; i < length; ++i) {
-            if (i < length / 2) {
+            if (i < t.length / 2) {
                 t[0][i] = t1[i];
                 t[1][i] = t2[i];
             } else {
