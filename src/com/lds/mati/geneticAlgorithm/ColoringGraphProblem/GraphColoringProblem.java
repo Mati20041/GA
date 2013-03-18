@@ -119,7 +119,7 @@ public class GraphColoringProblem implements Problem<Integer> {
         int length = t1.length;
         int crossPosition1, crossPosition2;
         Integer[][] t = new Integer[6][length];
-        if (isRandomCrossPosition) {
+        if (randomCrossPosition) {
             double d1, d2;
             d1 = Math.random() * length;
             d2 = Math.random() * length;
@@ -196,7 +196,7 @@ public class GraphColoringProblem implements Problem<Integer> {
     }
 
     private int getRandomColor() {
-        return (int) Math.floor(Math.random() * (colors));
+        return (int) Math.floor(Math.random() * colors);
     }
 
     @Override
