@@ -43,16 +43,14 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static Settings settings;
 
     public static void main(String[] args) {
-        settings = new Settings();
-        loadSettings();
+        Settings settings = loadSettings();
         if (args.length > 0 && args[0].equals("nogui")) {
             if (args.length == 2 && args[1].equals("notifications")) {
-                noGui(true);
+                noGui(settings,true);
             } else {
-                noGui(false);
+                noGui(settings,false);
             }
         } else {
             try {
@@ -103,7 +101,7 @@ public class Main {
 //        System.out.println(String.format("Dane dla 10 uruchomień\n~Max wartość %.4f dla %.10f\n~Wartość średnia %.4f dla %.10f\nWartość min %.4f dla %.10f", m, mv, a, av, mi, miv));
     }
 
-    public static void noGui(boolean showNotifications) {
+    public static void noGui(Settings settings, boolean showNotifications) {
         Graph graf = new Graph();
         try {
             graf.loadFromFile(settings.graphFileName);
@@ -160,8 +158,9 @@ public class Main {
         }
     }
 
-    public static void loadSettings() {
+    public static Settings loadSettings() {
         File settingsFile = new File("settings.xml");
+        Settings settings = null;
         if (settingsFile.exists()) {
             try {
                 JAXBContext context = JAXBContext.newInstance(Settings.class);
@@ -171,8 +170,10 @@ public class Main {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
+            settings = new Settings();
             saveSettings(settings);
         }
+        return settings;
     }
 
     public static void saveSettings(Settings settings) {
