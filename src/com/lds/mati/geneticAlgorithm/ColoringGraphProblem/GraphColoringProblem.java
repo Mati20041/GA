@@ -74,9 +74,9 @@ public class GraphColoringProblem implements Problem<Integer> {
             t1 = population.get(i);
             if (Math.random() < crossProbability) {
                 if (isTwoPartCrossing) {
-                    t = cross(t1, population.get((int) Math.floor(Math.random() * (popSize))));
+                    t = cross(t1, population.get((int) Math.floor(Math.random() * (popSize))),isRandomCrossPosition);
                 } else {
-                    t = cross2(t1, population.get((int) Math.floor(Math.random() * (popSize))));
+                    t = cross2(t1, population.get((int) Math.floor(Math.random() * (popSize))),isRandomCrossPosition);
                 }
                 for (int j = 0; j < t.length; ++j) {
                     newPopulation.add(t[j]);
@@ -139,11 +139,12 @@ public class GraphColoringProblem implements Problem<Integer> {
         return (int) Math.floor(Math.random() * (colors));
     }
 
-    private Integer[][] cross(Integer[] t1, Integer[] t2) {
+    private Integer[][] cross(Integer[] t1, Integer[] t2, boolean randomCrossPosition) {
         int length = t1.length;
+        int crossPosition = randomCrossPosition?(int)(Math.random()*length):length/2;
         Integer[][] t = new Integer[2][length];
         for (int i = 0; i < length; ++i) {
-            if (i < t.length / 2) {
+            if (i < crossPosition / 2) {
                 t[0][i] = t1[i];
                 t[1][i] = t2[i];
             } else {
@@ -155,18 +156,30 @@ public class GraphColoringProblem implements Problem<Integer> {
         return t;
     }
 
-    private Integer[][] cross2(Integer[] t1, Integer[] t2) {
+    private Integer[][] cross2(Integer[] t1, Integer[] t2, boolean randomCrossPosition) {
         int length = t1.length;
+        int crossPosition1,crossPosition2;
         Integer[][] t = new Integer[6][length];
+        if(isRandomCrossPosition){
+            double d1,d2;
+            d1 = Math.random()*length;
+            d2 = Math.random()*length;
+            crossPosition1 = (int)Math.min(d1, d2);
+            crossPosition2 = (int)Math.max(d1, d2);
+        } else {
+            crossPosition1 = length/3;
+            crossPosition2 = crossPosition1*2;
+        }
+        
         for (int i = 0; i < length; ++i) {
-            if (i < length / 3) {
+            if (i < crossPosition1) {
                 t[0][i] = t1[i];
                 t[1][i] = t1[i];
                 t[2][i] = t1[i];
                 t[3][i] = t2[i];
                 t[4][i] = t2[i];
                 t[5][i] = t2[i];
-            } else if (i > length / 3 && i < length * 2 / 3) {
+            } else if (i >= crossPosition1 && i < crossPosition2) {
                 t[0][i] = t1[i];
                 t[1][i] = t1[i];
                 t[2][i] = t2[i];
