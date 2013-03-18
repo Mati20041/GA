@@ -12,9 +12,9 @@ import java.util.ArrayList;
  */
 public interface Problem<T> {
     public ArrayList<T[]> init(int size);
-    public ArrayList<T[]> mutate(ArrayList<T[]> population, double mutationProbabilty);
-    public ArrayList<T[]> crossover(ArrayList<T[]> population,int size, double crossProbabilty);
     public ArrayList<T[]> selection(ArrayList<T[]> population, int size);
+    public ArrayList<T[]> crossover(ArrayList<T[]> population,int size, double crossProbabilty);
+    public ArrayList<T[]> mutate(ArrayList<T[]> population, double mutationProbabilty);
     public boolean stopFunction(T[] bestSolution);
     public double costFunction(T[] subject);
     public double[] gradeEveryone(ArrayList<T[]> population);
