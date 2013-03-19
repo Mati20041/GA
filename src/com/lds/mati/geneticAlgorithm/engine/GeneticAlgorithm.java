@@ -5,8 +5,6 @@
 package com.lds.mati.geneticAlgorithm.engine;
 
 import java.util.ArrayList;
-import javax.swing.JFrame;
-import org.math.plot.Plot2DPanel;
 
 /**
  *

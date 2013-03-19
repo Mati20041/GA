@@ -6,6 +6,7 @@ package com.lds.mati.geneticAlgorithm;
 
 import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.GraphColoringProblem;
 import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.Graph;
+import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.NotEvolutionAlgorithms;
 import com.lds.mati.geneticAlgorithm.engine.GeneticAlgorithm;
 import com.lds.mati.geneticAlgorithm.GUI.GUI;
 import java.io.File;
@@ -31,14 +32,17 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-
     public static void main(String[] args) {
         Settings settings = loadSettings();
-        if (args.length > 0 && args[0].equals("nogui")) {
-            if (args.length == 2 && args[1].equals("notifications")) {
-                noGui(settings,true);
-            } else {
-                noGui(settings,false);
+        if (args.length > 0) {
+            if (args[0].equals("nogui")) {
+                if (args.length == 2 && args[1].equals("notifications")) {
+                    noGui(settings, true);
+                } else {
+                    noGui(settings, false);
+                }
+            } else if(args[0].equals("algorithm")){
+                runAlgorithm(settings,args[1]==null?"lf":args[1]);
             }
         } else {
             try {
@@ -176,5 +180,25 @@ public class Main {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    private static void runAlgorithm(Settings settings, String par) {
+        Graph graf = new Graph();
+        try {
+            graf.loadFromFile(settings.graphFileName);
+        } catch (FileNotFoundException ex) {
+            System.err.println("Błąd pliku grafu!");
+            System.exit(-1);
+        }
+        int[] result;
+        
+        if(par.equals("lf"))result = NotEvolutionAlgorithms.solveLargestFirst(graf);
+        else result = NotEvolutionAlgorithms.solveSmallestFirst(graf);
+        
+        int max = 0;
+        for(int i = 0 ; i < result.length ; ++i){
+            max = max>result[i]?max:result[i];
+        }
+        System.out.println("Liczba kolorów wyznaczona przez alorytm "+par+" wynosi: "+(max+1));
     }
 }

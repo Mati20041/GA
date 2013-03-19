@@ -345,13 +345,13 @@ public class GUI extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         if (graph == null) {
-            JOptionPane.showMessageDialog(this, "Brak wczytanego grafu!");
+            JOptionPane.showConfirmDialog(this, "Brak wczytanego grafu!");
             return;
         }
         try {
             readSettingsParameters();
         } catch (NumberFormatException numberFormatException) {
-            JOptionPane.showMessageDialog(this, "Błąd wprowadzonych danych!");
+            JOptionPane.showConfirmDialog(this, "Błąd wprowadzonych danych!");
             return;
         }
         gcp = new GraphColoringProblem(graph, settings.colors, jRadioButton1.isSelected(), jRadioButton4.isSelected());
@@ -359,7 +359,7 @@ public class GUI extends javax.swing.JFrame {
         try {
             ea.validate();
         } catch (IllegalStateException illegalStateException) {
-            JOptionPane.showMessageDialog(this, illegalStateException.getMessage());
+            JOptionPane.showConfirmDialog(this, illegalStateException.getMessage());
             return;
         }
         jProgressBar1.setValue(0);
@@ -402,7 +402,7 @@ public class GUI extends javax.swing.JFrame {
             try {
                 graph.loadFromFile(t.getAbsolutePath());
             } catch (FileNotFoundException ex) {
-                JOptionPane.showMessageDialog(this, "Błąd pliku!");
+                JOptionPane.showConfirmDialog(this, "Błąd pliku!");
             }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -516,7 +516,7 @@ public class GUI extends javax.swing.JFrame {
     }
 
     public void saveResult() {
-        if (ea.bestSolution != null) {
+        if (ea!=null && ea.bestSolution != null) {
             fj.showSaveDialog(this);
             if (fj.getSelectedFile() != null) {
                 try {
@@ -527,7 +527,7 @@ public class GUI extends javax.swing.JFrame {
                     out.close();
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(rootPane, "Nieudana próba zapisu!");
+                    JOptionPane.showConfirmDialog(rootPane, "Nieudana próba zapisu!");
                 }
             }
         } else {
@@ -547,6 +547,8 @@ public class GUI extends javax.swing.JFrame {
         jTextField4.setText(settings.mutationProbability + "");
         jTextField5.setText(settings.crossProbability + "");
         jTextField6.setText(settings.maxIterations + "");
+        jRadioButton2.setSelected(!settings.isDoubleSlicedGenom);
+        jRadioButton4.setSelected(settings.isRandomCrossPosition);
     }
 
     public void setSettings(Settings settings) {
@@ -561,5 +563,7 @@ public class GUI extends javax.swing.JFrame {
         settings.mutationProbability = Double.parseDouble(jTextField4.getText());
         settings.crossProbability = Double.parseDouble(jTextField5.getText());
         settings.maxIterations = Integer.parseInt(jTextField6.getText());
+        settings.isDoubleSlicedGenom = jRadioButton1.isSelected();
+        settings.isRandomCrossPosition = jRadioButton4.isSelected();
     }
 }
