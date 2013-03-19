@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <settings>
     <maxIterations>10000</maxIterations>
-    <colors>3</colors>
-    <populationSize>40</populationSize>
-    <parentsSize>10</parentsSize>
+    <colors>11</colors>
+    <populationSize>100</populationSize>
+    <parentsSize>20</parentsSize>
     <crossProbability>0.7</crossProbability>
     <mutationProbability>0.006</mutationProbability>
     <isDoubleSlicedGenom>true</isDoubleSlicedGenom>

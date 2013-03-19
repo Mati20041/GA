@@ -510,6 +510,8 @@ public class GUI extends javax.swing.JFrame {
         jTextField6.setEnabled(ustaw);
         jRadioButton1.setEnabled(ustaw);
         jRadioButton2.setEnabled(ustaw);
+        jRadioButton3.setEnabled(ustaw);
+        jRadioButton4.setEnabled(ustaw);
         jButton3.setEnabled(!ustaw);
     }
 
@@ -520,7 +522,7 @@ public class GUI extends javax.swing.JFrame {
                 try {
                     PrintWriter out = new PrintWriter(fj.getSelectedFile());
                     for (int i = 0; i < ea.bestSolution.length; ++i) {
-                        out.printf("v%d : %d\n", i, ea.bestSolution[i]);
+                        out.printf("v%d : %d\n", i+1, ea.bestSolution[i]);
                     }
                     out.close();
                 } catch (FileNotFoundException ex) {
