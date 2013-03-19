@@ -7,9 +7,11 @@ package com.lds.mati.geneticAlgorithm.GUI;
 import com.lds.mati.geneticAlgorithm.engine.GeneticAlgorithm;
 import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.Graph;
 import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.GraphColoringProblem;
+import com.lds.mati.geneticAlgorithm.ColoringGraphProblem.NotEvolutionAlgorithms;
 import com.lds.mati.geneticAlgorithm.Main;
 import com.lds.mati.geneticAlgorithm.Settings;
 import java.awt.BorderLayout;
+import java.awt.HeadlessException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -92,6 +94,10 @@ public class GUI extends javax.swing.JFrame {
         jRadioButton4 = new javax.swing.JRadioButton();
         jButton4 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Algorytm Genetyczny - Kolorowanie Grafu");
@@ -313,6 +319,28 @@ public class GUI extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
+        jMenu1.setText("Nieewolucyjne algorytmy");
+
+        jMenuItem1.setText("Largest First");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuItem2.setText("Smallest First");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
+
+        jMenuBar1.add(jMenu1);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -345,53 +373,12 @@ public class GUI extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         if (graph == null) {
-            JOptionPane.showConfirmDialog(this, "Brak wczytanego grafu!");
+            JOptionPane.showMessageDialog(this, "Brak wczytanego grafu!");
             return;
         }
-        try {
-            readSettingsParameters();
-        } catch (NumberFormatException numberFormatException) {
-            JOptionPane.showConfirmDialog(this, "Błąd wprowadzonych danych!");
+        if (runEvolutionaryAlgorithm()) {
             return;
         }
-        gcp = new GraphColoringProblem(graph, settings.colors, jRadioButton1.isSelected(), jRadioButton4.isSelected());
-        ea = new GeneticAlgorithm<>(gcp, settings.populationSize, settings.parentsSize, settings.crossProbability, settings.mutationProbability, settings.maxIterations);
-        try {
-            ea.validate();
-        } catch (IllegalStateException illegalStateException) {
-            JOptionPane.showConfirmDialog(this, illegalStateException.getMessage());
-            return;
-        }
-        jProgressBar1.setValue(0);
-        jProgressBar1.setString("0");
-        setButtonsState(false);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ea.run();
-                jLabel7.setText(String.format("Info: Best Result: %.4f No of Iteration: %d", ea.bestSolutionCost, ea.iterations));
-                plot(ea.max, ea.avg, ea.min, p, settings.maxPlotVars);
-                //jProgressBar1.setIndeterminate(false);
-                setButtonsState(true);
-            }
-        }).start();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                do {
-                    try {
-                        Thread.sleep(settings.refreshNotificationTime);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    int iter = ea.iterations;
-                    double fval = ea.bestSolutionCost;
-                    jProgressBar1.setValue(iter * 100 / settings.maxIterations);
-                    jProgressBar1.setString(String.format("It: %d Fval: %.4f", iter, fval));
-                } while (ea.isRunning());
-            }
-        }).start();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -402,9 +389,12 @@ public class GUI extends javax.swing.JFrame {
             try {
                 graph.loadFromFile(t.getAbsolutePath());
             } catch (FileNotFoundException ex) {
-                JOptionPane.showConfirmDialog(this, "Błąd pliku!");
+                JOptionPane.showMessageDialog(this, "Błąd pliku!");
+                return;
             }
         }
+        gcp = new GraphColoringProblem(graph, settings.colors, jRadioButton1.isSelected(), jRadioButton4.isSelected());
+        ea = new GeneticAlgorithm<>(gcp, settings.populationSize, settings.parentsSize, settings.crossProbability, settings.mutationProbability, settings.maxIterations);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -413,6 +403,24 @@ public class GUI extends javax.swing.JFrame {
         saveResult();
         setButtonsState(true);
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        if (graph == null) {
+            JOptionPane.showMessageDialog(this, "Brak wczytanego grafu!");
+            return;
+        }
+        useNonEvolutionaryAlgorith(1);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        // TODO add your handling code here:
+        if (graph == null) {
+            JOptionPane.showMessageDialog(this, "Brak wczytanego grafu!");
+            return;
+        }
+        useNonEvolutionaryAlgorith(2);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -481,6 +489,10 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -516,22 +528,22 @@ public class GUI extends javax.swing.JFrame {
     }
 
     public void saveResult() {
-        if (ea!=null && ea.bestSolution != null) {
+        if (ea != null && ea.bestSolution != null) {
             fj.showSaveDialog(this);
             if (fj.getSelectedFile() != null) {
                 try {
                     PrintWriter out = new PrintWriter(fj.getSelectedFile());
                     for (int i = 0; i < ea.bestSolution.length; ++i) {
-                        out.printf("v%d : %d\n", i+1, ea.bestSolution[i]);
+                        out.printf("v%d : %d\n", i + 1, ea.bestSolution[i]);
                     }
                     out.close();
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showConfirmDialog(rootPane, "Nieudana próba zapisu!");
+                    JOptionPane.showMessageDialog(rootPane, "Nieudana próba zapisu!");
                 }
             }
         } else {
-            JOptionPane.showConfirmDialog(rootPane, "Brak wyniku!");
+            JOptionPane.showMessageDialog(rootPane, "Brak wyniku!");
         }
     }
 
@@ -557,13 +569,87 @@ public class GUI extends javax.swing.JFrame {
     }
 
     private void readSettingsParameters() throws NumberFormatException {
-        settings.colors = Integer.parseInt(jTextField1.getText());
-        settings.populationSize = Integer.parseInt(jTextField2.getText());
-        settings.parentsSize = Integer.parseInt(jTextField3.getText());
-        settings.mutationProbability = Double.parseDouble(jTextField4.getText());
-        settings.crossProbability = Double.parseDouble(jTextField5.getText());
-        settings.maxIterations = Integer.parseInt(jTextField6.getText());
-        settings.isDoubleSlicedGenom = jRadioButton1.isSelected();
-        settings.isRandomCrossPosition = jRadioButton4.isSelected();
+        try {
+            settings.colors = Integer.parseInt(jTextField1.getText());
+            settings.populationSize = Integer.parseInt(jTextField2.getText());
+            settings.parentsSize = Integer.parseInt(jTextField3.getText());
+            settings.mutationProbability = Double.parseDouble(jTextField4.getText());
+            settings.crossProbability = Double.parseDouble(jTextField5.getText());
+            settings.maxIterations = Integer.parseInt(jTextField6.getText());
+            settings.isDoubleSlicedGenom = jRadioButton1.isSelected();
+            settings.isRandomCrossPosition = jRadioButton4.isSelected();
+        } catch (NumberFormatException numberFormatException) {
+        }
+    }
+
+    private void useNonEvolutionaryAlgorith(int type) {
+
+
+        Integer[] result = null;
+
+        switch (type) {
+            case 1:
+                result = NotEvolutionAlgorithms.solveLargestFirst(graph);
+                break;
+            case 2:
+                result = NotEvolutionAlgorithms.solveSmallestFirst(graph);
+                break;
+        }
+
+        int max = 0;
+        for (int i = 0; i < result.length; ++i) {
+            max = max > result[i] ? max : result[i];
+        }
+        double fval = gcp.costFunction(result);
+
+        jLabel7.setText("Info: NonGenetic - Fval: " + fval + " No of colors: " + (max + 1));
+
+    }
+
+    private boolean runEvolutionaryAlgorithm() throws HeadlessException, IllegalStateException {
+        try {
+            readSettingsParameters();
+        } catch (NumberFormatException numberFormatException) {
+            JOptionPane.showMessageDialog(this, "Błąd wprowadzonych danych!");
+            return true;
+        }
+        gcp = new GraphColoringProblem(graph, settings.colors, jRadioButton1.isSelected(), jRadioButton4.isSelected());
+        ea = new GeneticAlgorithm<>(gcp, settings.populationSize, settings.parentsSize, settings.crossProbability, settings.mutationProbability, settings.maxIterations);
+        try {
+            ea.validate();
+        } catch (IllegalStateException illegalStateException) {
+            JOptionPane.showMessageDialog(this, illegalStateException.getMessage());
+            return true;
+        }
+        jProgressBar1.setValue(0);
+        jProgressBar1.setString("0");
+        setButtonsState(false);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ea.run();
+                jLabel7.setText(String.format("Info: Best Result: %.4f No of Iteration: %d", ea.bestSolutionCost, ea.iterations));
+                plot(ea.max, ea.avg, ea.min, p, settings.maxPlotVars);
+                //jProgressBar1.setIndeterminate(false);
+                setButtonsState(true);
+            }
+        }).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                do {
+                    try {
+                        Thread.sleep(settings.refreshNotificationTime);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    int iter = ea.iterations;
+                    double fval = ea.bestSolutionCost;
+                    jProgressBar1.setValue(iter * 100 / settings.maxIterations);
+                    jProgressBar1.setString(String.format("It: %d Fval: %.4f", iter, fval));
+                } while (ea.isRunning());
+            }
+        }).start();
+        return false;
     }
 }

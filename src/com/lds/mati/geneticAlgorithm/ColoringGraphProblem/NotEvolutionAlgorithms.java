@@ -12,9 +12,12 @@ import java.util.ArrayList;
  */
 public class NotEvolutionAlgorithms {
 
-    public static int[] solveSmallestFirst(Graph graph) {
+    public static Integer[] solveSmallestFirst(Graph graph) {
         ArrayList<Integer> cache = new ArrayList<>(graph.graph.size());
-        int[] result = new int[graph.graph.size()];
+        Integer[] result = new Integer[graph.graph.size()];
+        for (int i = 0; i < result.length; ++i) {
+            result[i] = 0;
+        }
         int color = 0;
         while (cache.size() < graph.graph.size()) {
             int indexSmallest = 0;
@@ -47,9 +50,12 @@ public class NotEvolutionAlgorithms {
         return result;
     }
 
-    public static int[] solveLargestFirst(Graph graph) {
+    public static Integer[] solveLargestFirst(Graph graph) {
         ArrayList<Integer> cache = new ArrayList<>(graph.graph.size());
-        int[] result = new int[graph.graph.size()];
+        Integer[] result = new Integer[graph.graph.size()];
+        for (int i = 0; i < result.length; ++i) {
+            result[i] = 0;
+        }
         int color = 0;
         while (cache.size() < graph.graph.size()) {
             int indexSmallest = 0;

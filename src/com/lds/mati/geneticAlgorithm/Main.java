@@ -42,7 +42,7 @@ public class Main {
                     noGui(settings, false);
                 }
             } else if(args[0].equals("algorithm")){
-                runAlgorithm(settings,args[1]==null?"lf":args[1]);
+                runAlgorithm(settings,args.length<2?"lf":args[1]);
             }
         } else {
             try {
@@ -190,7 +190,7 @@ public class Main {
             System.err.println("Błąd pliku grafu!");
             System.exit(-1);
         }
-        int[] result;
+        Integer[] result = null;
         
         if(par.equals("lf"))result = NotEvolutionAlgorithms.solveLargestFirst(graf);
         else result = NotEvolutionAlgorithms.solveSmallestFirst(graf);

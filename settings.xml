@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <settings>
-    <maxIterations>10000</maxIterations>
+    <maxIterations>100000</maxIterations>
     <colors>11</colors>
     <populationSize>100</populationSize>
     <parentsSize>20</parentsSize>
     <crossProbability>0.7</crossProbability>
-    <mutationProbability>0.006</mutationProbability>
-    <isDoubleSlicedGenom>true</isDoubleSlicedGenom>
-    <isRandomCrossPosition>false</isRandomCrossPosition>
+    <mutationProbability>0.008</mutationProbability>
+    <isDoubleSlicedGenom>false</isDoubleSlicedGenom>
+    <isRandomCrossPosition>true</isRandomCrossPosition>
     <plotGraph>true</plotGraph>
     <refreshNotificationTime>1000</refreshNotificationTime>
     <graphFileName>anna.col</graphFileName>
