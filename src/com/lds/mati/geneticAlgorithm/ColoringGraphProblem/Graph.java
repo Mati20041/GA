@@ -31,7 +31,6 @@ public class Graph {
         }
         in.next();
 
-        ArrayList<Integer> temp = new ArrayList<>();
         int edges = in.nextInt();
         int size = in.nextInt();
         graph = new ArrayList<>(edges);

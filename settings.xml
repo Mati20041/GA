@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <settings>
-    <maxIterations>20000</maxIterations>
-    <colors>31</colors>
+    <maxIterations>200000</maxIterations>
+    <colors>3</colors>
     <populationSize>100</populationSize>
     <parentsSize>10</parentsSize>
     <crossProbability>0.6</crossProbability>
-    <mutationProbability>0.007</mutationProbability>
+    <mutationProbability>0.005</mutationProbability>
     <isDoubleSlicedGenom>true</isDoubleSlicedGenom>
     <isRandomCrossPosition>false</isRandomCrossPosition>
     <plotGraph>true</plotGraph>

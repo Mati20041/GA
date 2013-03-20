@@ -473,6 +473,8 @@ public class GUI extends javax.swing.JFrame {
         p.addLinePlot("Max", X, max2);
         p.addLinePlot("Avg", X, avg2);
         p.addLinePlot("Min", X, min2);
+        p.setAxisLabel(0, "Generacja");
+        p.setAxisLabel(1, "Ocena");
         p.setFixedBounds(0, 0, X[X.length - 1]);
         p.setVisible(true);
     }
@@ -584,7 +586,6 @@ public class GUI extends javax.swing.JFrame {
     }
 
     private void useNonEvolutionaryAlgorith(int type) {
-
 
         Integer[] result = null;
 
