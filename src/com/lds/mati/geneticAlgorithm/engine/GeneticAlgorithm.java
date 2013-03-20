@@ -58,7 +58,6 @@ public class GeneticAlgorithm<T> {
         }
         isRunning = false;
         bestSolutionCost = problem.costFunction(bestSolution);
-        System.out.println("Best solution cost: " + problem.costFunction(bestSolution) + " No iterations: " + iterations);
         return bestSolution;
     }
 

@@ -319,7 +319,8 @@ public class GUI extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        jMenu1.setText("Nieewolucyjne algorytmy");
+        jMenu1.setText("Algorytmy zachłanne");
+        jMenu1.setActionCommand("Algorytmy zachłanne");
 
         jMenuItem1.setText("Largest First");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {

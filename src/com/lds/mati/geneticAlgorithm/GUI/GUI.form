@@ -10,7 +10,8 @@
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="jMenu1">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Nieewolucyjne algorytmy"/>
+            <Property name="text" type="java.lang.String" value="Algorytmy zach&#x142;anne"/>
+            <Property name="actionCommand" type="java.lang.String" value="Algorytmy zach&#x142;anne"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">

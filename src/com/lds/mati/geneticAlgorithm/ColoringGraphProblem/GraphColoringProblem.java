@@ -18,12 +18,8 @@ public class GraphColoringProblem implements Problem<Integer> {
 
     private Graph graph;
     private int colors;
-    private boolean isTwoPartCrossing;
+    private boolean isDoubleSlicedGenom;
     private boolean isRandomCrossPosition;
-
-    public void setTwoPartCrossing(boolean isTwoPartCrossing) {
-        this.isTwoPartCrossing = isTwoPartCrossing;
-    }
 
     public GraphColoringProblem(Graph graph, int colors, boolean isTwoPartCrossing, boolean isRandomCrossPosition) {
         if (colors < 1) {
@@ -31,7 +27,7 @@ public class GraphColoringProblem implements Problem<Integer> {
         }
         this.graph = graph;
         this.colors = colors;
-        this.isTwoPartCrossing = isTwoPartCrossing;
+        this.isDoubleSlicedGenom = isTwoPartCrossing;
         this.isRandomCrossPosition = isRandomCrossPosition;
     }
 
@@ -83,7 +79,7 @@ public class GraphColoringProblem implements Problem<Integer> {
 
             t1 = population.get(i);
             if (Math.random() < crossProbability) {
-                if (isTwoPartCrossing) {
+                if (isDoubleSlicedGenom) {
                     t = cross(t1, population.get((int) Math.floor(Math.random() * (popSize))), isRandomCrossPosition);
                 } else {
                     t = cross2(t1, population.get((int) Math.floor(Math.random() * (popSize))), isRandomCrossPosition);

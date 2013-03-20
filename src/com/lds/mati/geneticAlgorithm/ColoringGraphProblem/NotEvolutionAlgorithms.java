@@ -16,7 +16,7 @@ public class NotEvolutionAlgorithms {
         ArrayList<Integer> cache = new ArrayList<>(graph.graph.size());
         Integer[] result = new Integer[graph.graph.size()];
         for (int i = 0; i < result.length; ++i) {
-            result[i] = 0;
+            result[i] = -1;
         }
         int color = 0;
         while (cache.size() < graph.graph.size()) {
@@ -38,10 +38,14 @@ public class NotEvolutionAlgorithms {
             }
 
             cache.add(indexSmallest);
-            for (Integer i : graph.graph.get(indexSmallest)) {
-                if (result[i] == color) {
+            int i = 0;
+            color = 0;
+            while (i < graph.graph.get(indexSmallest).size()) {
+                if (result[graph.graph.get(indexSmallest).get(i)] == color) {
+                    i = 0;
                     color++;
-                    break;
+                } else {
+                    ++i;
                 }
             }
             result[indexSmallest] = color;
@@ -54,35 +58,38 @@ public class NotEvolutionAlgorithms {
         ArrayList<Integer> cache = new ArrayList<>(graph.graph.size());
         Integer[] result = new Integer[graph.graph.size()];
         for (int i = 0; i < result.length; ++i) {
-            result[i] = 0;
+            result[i] = -1;
         }
         int color = 0;
         while (cache.size() < graph.graph.size()) {
-            int indexSmallest = 0;
+            int indexLargest = 0;
             int largestNeighbour = 0;
             for (int i = 0; i < graph.graph.size(); ++i) {
                 if (cache.contains(i)) {
                     continue;
                 }
                 if (largestNeighbour == 0) {
-                    indexSmallest = i;
+                    indexLargest = i;
                     largestNeighbour = graph.graph.get(i).size();
                     continue;
                 }
                 if (graph.graph.get(i).size() > largestNeighbour) {
-                    indexSmallest = i;
+                    indexLargest = i;
                     largestNeighbour = graph.graph.get(i).size();
                 }
             }
-
-            cache.add(indexSmallest);
-            for (Integer i : graph.graph.get(indexSmallest)) {
-                if (result[i] == color) {
+            color = 0;
+            cache.add(indexLargest);
+            int i = 0;
+            while (i < graph.graph.get(indexLargest).size()) {
+                if (result[graph.graph.get(indexLargest).get(i)] == color) {
+                    i = 0;
                     color++;
-                    break;
+                } else {
+                    ++i;
                 }
             }
-            result[indexSmallest] = color;
+            result[indexLargest] = color;
         }
 
         return result;
