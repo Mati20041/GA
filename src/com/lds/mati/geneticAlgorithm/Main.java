@@ -191,10 +191,17 @@ public class Main {
         Integer[] bestSolution = new Integer[graf.graph.size()];
         int avgIterations = 0;
         double m, a, mi, mv, av, miv;
-        m = a = mi = mv = av = miv = 0;
+        int success, failure;
+        m = a = mi = mv = av = miv = failure = success = 0;
+
         for (int i = 0; i < 10; ++i) {
             ea.run();
             double t1 = ea.bestSolutionCost;
+            if (ea.hasFoundSolution) {
+                ++success;
+            } else {
+                ++failure;
+            }
             double t3 = ea.min.get(ea.min.size() - 1);
             double t2 = ea.avg.get(ea.avg.size() - 1);
             max.add(t1);
@@ -211,7 +218,7 @@ public class Main {
                 bestMin = new ArrayList<>(ea.min);
                 bestSolution = ea.bestSolution;
             }
-            System.out.println(String.format("Pętla %d ilość iteracji %d :{ MaxFval: %.4f , AvgFval: %.4f , MinFval: %.4f}", (i+1), ea.iterations, t1, t2, t3));
+            System.out.println(String.format("Pętla %d ilość iteracji %d :{ MaxFval: %.4f , AvgFval: %.4f , MinFval: %.4f}", (i + 1), ea.iterations, t1, t2, t3));
         }
         m /= max.size();
         a /= avg.size();
@@ -226,7 +233,7 @@ public class Main {
         av /= avg.size();
         miv /= min.size();
 
-        System.out.println(String.format("Dane dla 10 uruchomień\n~Max wartość %.4f dla %.10f\n~Wartość średnia %.4f dla %.10f\n~Wartość min %.4f dla %.10f\n~Ilość iteracji %d\n", m, mv, a, av, mi, miv,avgIterations));
+        System.out.println(String.format("Dane dla 10 uruchomień\n%d/%d udanych\n~Max wartość %.4f dla %.10f\n~Wartość średnia %.4f dla %.10f\n~Wartość min %.4f dla %.10f\n~Ilość iteracji %d\n",success,(success+failure), m, mv, a, av, mi, miv, avgIterations));
         if (settings.plotGraph) {
             JFrame window = new JFrame("Najlepszy przebieg");
             window.setSize(600, 600);

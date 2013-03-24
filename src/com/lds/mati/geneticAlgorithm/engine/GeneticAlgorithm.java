@@ -20,6 +20,7 @@ public class GeneticAlgorithm<T> {
     public ArrayList<Double> min;
     public double bestSolutionCost;
     public int iterations;
+    public boolean hasFoundSolution;
     private boolean isRunning;
     
     public int populationSize;
@@ -58,6 +59,7 @@ public class GeneticAlgorithm<T> {
         }
         isRunning = false;
         bestSolutionCost = problem.costFunction(bestSolution);
+        hasFoundSolution = problem.stopFunction(bestSolution);
         return bestSolution;
     }
 
@@ -70,15 +72,22 @@ public class GeneticAlgorithm<T> {
             current = problem.costFunction(gens.get(i));
             if (max < current) {
                 max = current;
-                if (bestSolution == null || max > problem.costFunction(bestSolution)) {
+                if (problem.isGreaterCostBetter() && (bestSolution == null || max > problem.costFunction(bestSolution))) {
                     bestSolution = gens.get(i);
                     bestSolutionCost=current;
                 }
             }
-            min = min > current ? current : min;
+            if(min>current){
+                min = current;
+                if (!problem.isGreaterCostBetter() && (bestSolution == null || min < problem.costFunction(bestSolution))) {
+                    bestSolution = gens.get(i);
+                    bestSolutionCost=current;
+                }
+            }
             avg += current;
         }
         avg /= gens.size();
+
 
         this.max.add(max);
         this.avg.add(avg);

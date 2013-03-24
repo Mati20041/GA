@@ -44,6 +44,28 @@ public class GraphColoringProblem implements Problem<Integer> {
         return temp;
     }
 
+    
+    public ArrayList<Integer[]> selection2(ArrayList<Integer[]> population, int size) {
+        if (size > population.size()) {
+            return population;
+        }
+
+        ArrayList<Integer[]> parents = new ArrayList<>();
+
+        //int matchLength = grades.length / size;
+        while (parents.size() < size) {
+            Collections.shuffle(population);
+            double[] grades = gradeEveryone(population);
+            int best = 0;
+            for(int i = 1 ; i < size; ++i){
+                if(grades[i]<grades[best]){
+                    best = i;
+                }
+            }
+            parents.add(population.get(best));
+        }
+        return parents;
+    }
     @Override
     public ArrayList<Integer[]> selection(ArrayList<Integer[]> population, int size) {
         if (size > population.size()) {
@@ -57,7 +79,7 @@ public class GraphColoringProblem implements Problem<Integer> {
         for (int i = 0; i < size; ++i) {
             int best = i * matchLength;
             for (int j = 1; j < matchLength && i * size + j < grades.length; ++j) {
-                if (grades[best] < grades[i * size + j]) {
+                if (grades[best] > grades[i * size + j]) {
                     best = i * size + j;
                 }
             }
@@ -168,7 +190,7 @@ public class GraphColoringProblem implements Problem<Integer> {
 
     @Override
     public boolean stopFunction(Integer[] bestSolution) {
-        return costFunction(bestSolution) >= 1;
+        return costFunction(bestSolution) ==0;
     }
 
     @Override
@@ -188,7 +210,7 @@ public class GraphColoringProblem implements Problem<Integer> {
             }
         }
         cost = 1 - (1. * conflicts / (conflicts + nonConflict));
-        return cost;
+        return conflicts;
     }
 
     private int getRandomColor() {
@@ -203,5 +225,10 @@ public class GraphColoringProblem implements Problem<Integer> {
         }
         return temp;
 
+    }
+
+    @Override
+    public boolean isGreaterCostBetter() {
+        return false;
     }
 }

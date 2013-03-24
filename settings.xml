@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <settings>
-    <maxIterations>200000</maxIterations>
-    <colors>3</colors>
-    <populationSize>100</populationSize>
-    <parentsSize>10</parentsSize>
-    <crossProbability>0.6</crossProbability>
-    <mutationProbability>0.005</mutationProbability>
-    <isDoubleSlicedGenom>true</isDoubleSlicedGenom>
-    <isRandomCrossPosition>false</isRandomCrossPosition>
+    <maxIterations>250000</maxIterations>
+    <colors>16</colors>
+    <populationSize>25</populationSize>
+    <parentsSize>5</parentsSize>
+    <crossProbability>0.7</crossProbability>
+    <mutationProbability>0.0032</mutationProbability>
+    <isDoubleSlicedGenom>false</isDoubleSlicedGenom>
+    <isRandomCrossPosition>true</isRandomCrossPosition>
     <plotGraph>true</plotGraph>
     <refreshNotificationTime>1000</refreshNotificationTime>
-    <graphFileName>homer.col</graphFileName>
-    <maxPlotVars>1000</maxPlotVars>
+    <graphFileName>queen14_14.col</graphFileName>
+    <maxPlotVars>3000</maxPlotVars>
 </settings>

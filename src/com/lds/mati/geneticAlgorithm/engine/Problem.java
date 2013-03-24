@@ -18,4 +18,5 @@ public interface Problem<T> {
     public boolean stopFunction(T[] bestSolution);
     public double costFunction(T[] subject);
     public double[] gradeEveryone(ArrayList<T[]> population);
+    public boolean isGreaterCostBetter();
 }
